@@ -5,6 +5,7 @@ handling user inputs, following the Single Responsibility Principle.
 """
 
 import tkinter as tk
+from tkinter import messagebox
 from PIL import Image, ImageTk
 
 
@@ -13,7 +14,6 @@ class AppView(tk.Tk):
 
     Attributes:
         controller (AppController): Controller instance for handling user actions.
-        config_frame (tk.Frame): Frame for click configuration inputs.
         video_label (tk.Label): Label for displaying video frames.
         entries (dict): Dictionary of (x, y) entry widgets for click configurations.
     """
@@ -29,17 +29,12 @@ class AppView(tk.Tk):
         self.controller = controller
         self.geometry("800x600")
 
-        # Section for click configuration inputs
-        self.config_frame = tk.Frame(self)
-        self.config_frame.pack(pady=10)
-        self.create_config_entries()
+        # Create menu bar
+        self.create_menu_bar()
 
         # Buttons for simple clicks
         tk.Button(self, text="Simulate Click 1", command=lambda: self.controller.simulate_click("click1")).pack(pady=5)
         tk.Button(self, text="Simulate Click 2", command=lambda: self.controller.simulate_click("click2")).pack(pady=5)
-
-        # Button to load video
-        tk.Button(self, text="Load Video", command=self.controller.load_video).pack(pady=10)
 
         # Label for displaying video frames
         self.video_label = tk.Label(self)
@@ -53,18 +48,54 @@ class AppView(tk.Tk):
         tk.Button(nav_frame, text="+30 min", command=lambda: self.controller.navigate("forward")).grid(row=0, column=2, padx=5)
         tk.Button(nav_frame, text="End", command=lambda: self.controller.navigate("end")).grid(row=0, column=3, padx=5)
 
-    def create_config_entries(self) -> None:
-        """Create input fields for configuring click coordinates."""
+    def create_menu_bar(self) -> None:
+        """Create the menu bar with File, Settings, and Help menus."""
+        menu_bar = tk.Menu(self)
+        self.config(menu=menu_bar)
+
+        # File menu
+        file_menu = tk.Menu(menu_bar, tearoff=0)
+        menu_bar.add_cascade(label="File", menu=file_menu)
+        file_menu.add_command(label="Load Video", command=self.controller.load_video)
+        file_menu.add_separator()
+        file_menu.add_command(label="Exit", command=self.quit)
+
+        # Settings menu
+        settings_menu = tk.Menu(menu_bar, tearoff=0)
+        menu_bar.add_cascade(label="Settings", menu=settings_menu)
+        settings_menu.add_command(label="Configure Clicks", command=self.open_click_config_window)
+
+        # Help menu
+        help_menu = tk.Menu(menu_bar, tearoff=0)
+        menu_bar.add_cascade(label="Help", menu=help_menu)
+        help_menu.add_command(label="About", command=self.show_about)
+
+    def open_click_config_window(self) -> None:
+        """Open a new window to configure click coordinates."""
+        config_window = tk.Toplevel(self)
+        config_window.title("Configure Click Positions")
+        config_window.geometry("300x400")
+
+        # Create input fields for click coordinates
         labels = ["Click1", "Click2", "Forward", "Backward", "Start", "End"]
         self.entries = {}
         for i, key in enumerate(["click1", "click2", "forward", "backward", "start", "end"]):
-            tk.Label(self.config_frame, text=f"{labels[i]} x,y:").grid(row=i, column=0)
-            x_entry = tk.Entry(self.config_frame, width=5)
-            y_entry = tk.Entry(self.config_frame, width=5)
-            x_entry.grid(row=i, column=1)
-            y_entry.grid(row=i, column=2)
-            tk.Button(self.config_frame, text="Set", command=lambda k=key, xe=x_entry, ye=y_entry: self.controller.set_click_position(k, xe.get(), ye.get())).grid(row=i, column=3)
+            tk.Label(config_window, text=f"{labels[i]} x,y:").grid(row=i, column=0, padx=5, pady=5)
+            x_entry = tk.Entry(config_window, width=5)
+            y_entry = tk.Entry(config_window, width=5)
+            x_entry.grid(row=i, column=1, padx=5)
+            y_entry.grid(row=i, column=2, padx=5)
+            tk.Button(config_window, text="Set", command=lambda k=key, xe=x_entry, ye=y_entry: self.controller.set_click_position(k, xe.get(), ye.get())).grid(row=i, column=3, padx=5)
             self.entries[key] = (x_entry, y_entry)
+
+    def show_about(self) -> None:
+        """Display an About dialog with application information."""
+        messagebox.showinfo(
+            "About PSG Video Navigator",
+            "PSG Video Navigator\nVersion 1.0\nDeveloped by EssesDev\n"
+            "A cross-platform tool for navigating videos and simulating mouse clicks.\n"
+            "Built with Python, Tkinter, OpenCV, and PyAutoGUI."
+        )
 
     def update_video_display(self, frame: any) -> None:
         """Update the video display with a new frame.

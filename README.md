@@ -74,6 +74,9 @@ To create a standalone executable:
 - Add support for video playback (optional).
 - Enhance UI with resizable video display and timestamp indicators.
 
+## Development Workflow
+- Changes are developed in the `dev` branch and merged into `main` after testing.
+
 ## License
 MIT License. All dependencies (Tkinter, OpenCV, PyAutoGUI, Pillow) are open-source with compatible licenses.
 
