@@ -5,9 +5,10 @@ A desktop application to navigate AVI/MP4 videos frame-by-frame and simulate mou
 ## Features
 - **Video Navigation**: Load AVI/MP4 videos and navigate statically (no playback) with buttons to jump forward/backward by 30 minutes, or to the start/end of the video.
 - **Mouse Click Simulation**: Trigger mouse clicks at user-defined (x, y) screen coordinates via buttons, with specific clicks tied to navigation actions.
-- **Configurable**: Set custom (x, y) coordinates for each click action through a simple Tkinter interface.
+- **Configurable**: Set custom (x, y) coordinates for each click action through a Settings menu.
 - **Cross-Platform**: Runs natively on Windows, with easy extension to Ubuntu and macOS using PyInstaller for standalone executables.
 - **Open-Source**: Built with MIT/Apache-licensed libraries, ensuring no licensing issues for deployment.
+- **Menu Bar**: Includes File (Load Video, Exit), Settings (Configure Clicks), and Help (About) menus for improved usability.
 
 ## Requirements
 - Python 3.10+ (tested on 3.11.7)
