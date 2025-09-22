@@ -7,6 +7,7 @@ handling user inputs, following the Single Responsibility Principle.
 import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
+import numpy as np
 
 
 class AppView(tk.Tk):
@@ -14,8 +15,10 @@ class AppView(tk.Tk):
 
     Attributes:
         controller (AppController): Controller instance for handling user actions.
+        video_frame (tk.Frame): Frame containing the video label with borders.
         video_label (tk.Label): Label for displaying video frames.
         entries (dict): Dictionary of (x, y) entry widgets for click configurations.
+        original_frame (PIL.Image): Original video frame for resizing.
     """
 
     def __init__(self, controller: any) -> None:
@@ -26,19 +29,29 @@ class AppView(tk.Tk):
         """
         super().__init__()
         self.title("PSG Video Navigator")
-        self.controller = controller
         self.geometry("800x600")
+        self.minsize(400, 300)  # Set minimum window size
+        self.controller = controller
 
         # Create menu bar
         self.create_menu_bar()
 
         # Buttons for simple clicks
-        tk.Button(self, text="Simulate Click 1", command=lambda: self.controller.simulate_click("click1")).pack(pady=5)
-        tk.Button(self, text="Simulate Click 2", command=lambda: self.controller.simulate_click("click2")).pack(pady=5)
+        click_frame = tk.Frame(self)
+        click_frame.pack(pady=5)
+        tk.Button(click_frame, text="Simulate Click 1", command=lambda: self.controller.simulate_click("click1")).pack(side=tk.LEFT, padx=5)
+        tk.Button(click_frame, text="Simulate Click 2", command=lambda: self.controller.simulate_click("click2")).pack(side=tk.LEFT, padx=5)
 
-        # Label for displaying video frames
-        self.video_label = tk.Label(self)
-        self.video_label.pack()
+        # Frame for video with borders
+        self.video_frame = tk.Frame(self, borderwidth=2, relief="ridge")
+        self.video_frame.pack(expand=True, fill=tk.BOTH, padx=10, pady=10)
+
+        # Label inside the video frame
+        self.video_label = tk.Label(self.video_frame)
+        self.video_label.pack(expand=True, fill=tk.BOTH)
+
+        # Bind resize event to update video display
+        self.bind("<Configure>", self.resize_image)
 
         # Navigation buttons
         nav_frame = tk.Frame(self)
@@ -48,6 +61,9 @@ class AppView(tk.Tk):
         tk.Button(nav_frame, text="+30 min", command=lambda: self.controller.navigate("forward")).grid(row=0, column=2, padx=5)
         tk.Button(nav_frame, text="End", command=lambda: self.controller.navigate("end")).grid(row=0, column=3, padx=5)
 
+        # Initialize original frame as None
+        self.original_frame = None
+
     def create_menu_bar(self) -> None:
         """Create the menu bar with File, Settings, and Help menus."""
         menu_bar = tk.Menu(self)
@@ -56,7 +72,8 @@ class AppView(tk.Tk):
         # File menu
         file_menu = tk.Menu(menu_bar, tearoff=0)
         menu_bar.add_cascade(label="File", menu=file_menu)
-        file_menu.add_command(label="Load Video", command=self.controller.load_video)
+        # Use lambda to safely access controller method
+        file_menu.add_command(label="Load Video", command=lambda: self.controller.load_video())
         file_menu.add_separator()
         file_menu.add_command(label="Exit", command=self.quit)
 
@@ -97,15 +114,27 @@ class AppView(tk.Tk):
             "Built with Python, Tkinter, OpenCV, and PyAutoGUI."
         )
 
-    def update_video_display(self, frame: any) -> None:
-        """Update the video display with a new frame.
+    def update_video_display(self, frame: np.ndarray) -> None:
+        """Update the video display with a new frame and store the original for resizing.
 
         Args:
             frame (numpy.ndarray): Video frame in RGB format.
         """
         if frame is not None:
-            img = Image.fromarray(frame)
-            imgtk = ImageTk.PhotoImage(image=img)
-            self.video_label.imgtk = imgtk  # Keep reference to avoid garbage collection
-            self.video_label.configure(image=imgtk)
-            
+            self.original_frame = Image.fromarray(frame)
+            self.resize_image()
+
+    def resize_image(self, event=None) -> None:
+        """Resize the video image to fit the current frame size."""
+        if self.original_frame is not None:
+            # Get current dimensions of the video frame
+            width = self.video_frame.winfo_width()
+            height = self.video_frame.winfo_height()
+            # Ensure dimensions are valid
+            if width > 0 and height > 0:
+                # Resize the image with high-quality resampling
+                resized_img = self.original_frame.resize((width, height), Image.LANCZOS)
+                imgtk = ImageTk.PhotoImage(image=resized_img)
+                self.video_label.imgtk = imgtk  # Keep reference to avoid garbage collection
+                self.video_label.configure(image=imgtk)
+                
