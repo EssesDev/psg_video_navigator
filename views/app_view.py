@@ -8,6 +8,8 @@ import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
 import numpy as np
+import pyautogui
+import time
 
 
 class AppView(tk.Tk):
@@ -32,6 +34,7 @@ class AppView(tk.Tk):
         self.geometry("800x600")
         self.minsize(400, 300)  # Set minimum window size
         self.controller = controller
+        self.attributes('-topmost', True)  # Keep window always on top
 
         # Create menu bar
         self.create_menu_bar()
@@ -95,9 +98,10 @@ class AppView(tk.Tk):
         """Open a new window to configure click coordinates."""
         config_window = tk.Toplevel(self)
         config_window.title("Configure Click Positions")
-        config_window.geometry("300x400")
+        config_window.geometry("400x400")
+        config_window.attributes('-topmost', True)  # Keep config window on top
 
-        # Create input fields for click coordinates
+        # Create input fields and capture buttons for click coordinates
         labels = ["Click1", "Click2", "Forward", "Backward", "Start", "End"]
         self.entries = {}
         for i, key in enumerate(["click1", "click2", "forward", "backward", "start", "end"]):
@@ -106,8 +110,28 @@ class AppView(tk.Tk):
             y_entry = tk.Entry(config_window, width=5)
             x_entry.grid(row=i, column=1, padx=5)
             y_entry.grid(row=i, column=2, padx=5)
-            tk.Button(config_window, text="Set", command=lambda k=key, xe=x_entry, ye=y_entry: self.controller.set_click_position(k, xe.get(), ye.get())).grid(row=i, column=3, padx=5)
+            tk.Button(config_window, text="Capture", command=lambda k=key, xe=x_entry, ye=y_entry: self.capture_position(k, xe, ye)).grid(row=i, column=3, padx=5)
+            tk.Button(config_window, text="Set", command=lambda k=key, xe=x_entry, ye=y_entry: self.set_position_from_entry(k, xe.get(), ye.get())).grid(row=i, column=4, padx=5)
             self.entries[key] = (x_entry, y_entry)
+
+    def capture_position(self, key: str, x_entry: tk.Entry, y_entry: tk.Entry) -> None:
+        """Capture mouse click position after a short delay and set it for the action."""
+        messagebox.showinfo("Capture Position", "Click on the screen where you want the click to occur. You have 5 seconds.")
+        time.sleep(5)  # Wait for user to click
+        x, y = pyautogui.position()
+        x_entry.delete(0, tk.END)
+        x_entry.insert(0, str(x))
+        y_entry.delete(0, tk.END)
+        y_entry.insert(0, str(y))
+        self.controller.set_click_position(key, x, y)
+
+    def set_position_from_entry(self, key: str, x_str: str, y_str: str) -> None:
+        """Set position from manual entry."""
+        try:
+            x, y = int(x_str), int(y_str)
+            self.controller.set_click_position(key, x, y)
+        except ValueError:
+            messagebox.showerror("Error", "Invalid x,y values")
 
     def show_about(self) -> None:
         """Display an About dialog with application information."""

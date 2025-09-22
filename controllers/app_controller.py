@@ -7,6 +7,7 @@ models with the Tkinter view, following the MVC pattern and Dependency Inversion
 from tkinter import filedialog, messagebox
 from models.video_model import VideoModel
 from models.click_model import ClickConfig
+import pyautogui
 
 
 class AppController:
@@ -31,32 +32,29 @@ class AppController:
         self.view = view
 
     def simulate_click(self, key: str) -> None:
-        """Simulate a mouse click at the configured coordinates for an action.
+        """Simulate a mouse click at the configured coordinates for an action without moving the cursor permanently.
 
         Args:
             key (str): Action identifier (e.g., 'click1', 'forward').
         """
         x, y = self.model_click.get_position(key)
-        import pyautogui
-        pyautogui.click(x, y)
+        # Save current mouse position
+        current_x, current_y = pyautogui.position()
+        # Move to target, click, and restore position quickly
+        pyautogui.moveTo(x, y, duration=0)
+        pyautogui.click()
+        pyautogui.moveTo(current_x, current_y, duration=0)
 
-    def set_click_position(self, key: str, x_str: str, y_str: str) -> None:
-        """Set click coordinates for an action and show confirmation.
+    def set_click_position(self, key: str, x: int, y: int) -> None:
+        """Set the (x, y) coordinates for a specific action and show confirmation.
 
         Args:
             key (str): Action identifier.
-            x_str (str): X-coordinate as string from UI input.
-            y_str (str): Y-coordinate as string from UI input.
-
-        Raises:
-            ValueError: If coordinates cannot be converted to integers.
+            x (int): X-coordinate for the click.
+            y (int): Y-coordinate for the click.
         """
-        try:
-            x, y = int(x_str), int(y_str)
-            self.model_click.set_position(key, x, y)
-            messagebox.showinfo("Config", f"Position for {key} set to ({x}, {y})")
-        except ValueError:
-            messagebox.showerror("Error", "Invalid x,y values")
+        self.model_click.set_position(key, x, y)
+        messagebox.showinfo("Config", f"Position for {key} set to ({x}, {y})")
 
     def load_video(self) -> None:
         """Open a file dialog to load a video and update the view.
