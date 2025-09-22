@@ -71,6 +71,7 @@ To create a standalone executable:
 - Fixed an `AttributeError` in MVC initialization by passing the controller to the view at creation, ensuring robust dependency injection.
 - Resolved Tkinter/PyAutoGUI compatibility by using Python 3.11.7 with `python3-tk` on Ubuntu 22.04.
 - Fixed `AttributeError` in menu bar by using lambda for safe controller method access.
+- Fixed navigation buttons disappearing after video load by switching to grid layout for better widget management.
 
 ## Future Improvements
 - Save click configurations to a JSON file.
