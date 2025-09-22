@@ -4,12 +4,13 @@ A desktop application to navigate AVI/MP4 videos frame-by-frame and simulate mou
 
 ## Features
 - **Video Navigation**: Load AVI/MP4 videos and navigate statically (no playback) with buttons to jump forward/backward by 30 minutes, or to the start/end of the video.
-- **Mouse Click Simulation**: Trigger mouse clicks at user-defined (x, y) screen coordinates via buttons, with specific clicks tied to navigation actions.
-- **Configurable**: Set custom (x, y) coordinates for each click action through a Settings menu.
+- **Mouse Click Simulation**: Trigger mouse clicks at user-defined (x, y) screen coordinates via buttons, with specific clicks tied to navigation actions. Clicks are performed without moving the cursor permanently.
+- **Configurable Clicks**: Set click coordinates by capturing a mouse click on the screen or manually entering (x, y) values through a Settings menu.
 - **Cross-Platform**: Runs natively on Windows, with easy extension to Ubuntu and macOS using PyInstaller for standalone executables.
 - **Open-Source**: Built with MIT/Apache-licensed libraries, ensuring no licensing issues for deployment.
 - **Menu Bar**: Includes File (Load Video, Exit), Settings (Configure Clicks), and Help (About) menus for improved usability.
 - **Responsive Video Display**: Video frames adapt to window size, displayed in a bordered frame, with a minimum window size of 400x300 pixels.
+- **Always On Top**: Application window remains in the foreground for user convenience.
 
 ## Requirements
 - Python 3.10+ (tested on 3.11.7)
@@ -41,12 +42,16 @@ A desktop application to navigate AVI/MP4 videos frame-by-frame and simulate mou
    ```bash
    python main.py
    ```
-2. **Load a Video**: Click "Charger Vidéo" to select an AVI/MP4 file.
-3. **Configure Clicks**: Enter (x, y) coordinates for each action (e.g., Clic1, Forward) and click "Set".
+2. **Load a Video**: Use "File > Load Video" to select an AVI/MP4 file.
+3. **Configure Clicks**:
+   - Go to "Settings > Configure Clicks" to open the configuration window.
+   - For each action (Click1, Click2, Forward, Backward, Start, End), either:
+     - Click "Capture", then click on the screen within 5 seconds to set the coordinates.
+     - Enter (x, y) coordinates manually and click "Set".
 4. **Navigate and Click**:
-   - Use "Simuler Clic 1/2" to trigger clicks at configured coordinates.
-   - Use navigation buttons ("Début", "-30 min", "+30 min", "Fin") to jump through the video and trigger associated clicks.
-5. The video frame updates statically in the UI, and clicks are simulated on the screen.
+   - Use "Simulate Click 1/2" to trigger clicks at configured coordinates.
+   - Use navigation buttons ("Start", "-30 min", "+30 min", "End") to jump through the video and trigger associated clicks.
+5. The video frame updates statically in a bordered frame, and the window stays on top.
 
 **Note**: PyAutoGUI performs real mouse clicks on your screen. Ensure coordinates are safe to avoid unintended interactions.
 
@@ -56,7 +61,7 @@ To create a standalone executable:
    ```bash
    pyinstaller --onefile --windowed --name psg-video-navigator main.py
    ```
-2. Find the executable in the `dist/` folder.
+2. Find the executable in the `dist/` folder as `psg-video-navigator.exe` (Windows) or `psg-video-navigator` (Linux/macOS).
 3. For Windows: Transfer and run the `.exe`. For Ubuntu/macOS: Rebuild on the target platform with PyInstaller.
 
 ## Project Structure
@@ -67,19 +72,20 @@ To create a standalone executable:
 - Follows MVC and SOLID principles for maintainability and extensibility.
 - Tests: All dependencies (`opencv-python`, `pillow`, `pyautogui`, `pyinstaller`) validated on Python 3.11.7.
 
+## Development Workflow
+- Changes are developed in the `dev` branch and merged into `main` after testing.
+
 ## Troubleshooting
 - Fixed an `AttributeError` in MVC initialization by passing the controller to the view at creation, ensuring robust dependency injection.
 - Resolved Tkinter/PyAutoGUI compatibility by using Python 3.11.7 with `python3-tk` on Ubuntu 22.04.
 - Fixed `AttributeError` in menu bar by using lambda for safe controller method access.
 - Fixed navigation buttons disappearing after video load by switching to grid layout for better widget management.
+- Improved click simulation to avoid permanent cursor movement and simplified click configuration with screen capture.
 
 ## Future Improvements
 - Save click configurations to a JSON file.
 - Add support for video playback (optional).
-- Enhance UI with resizable video display and timestamp indicators.
-
-## Development Workflow
-- Changes are developed in the `dev` branch and merged into `main` after testing.
+- Add timestamp indicators for video navigation.
 
 ## License
 MIT License. All dependencies (Tkinter, OpenCV, PyAutoGUI, Pillow) are open-source with compatible licenses.
