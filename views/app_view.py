@@ -36,15 +36,19 @@ class AppView(tk.Tk):
         # Create menu bar
         self.create_menu_bar()
 
+        # Use grid layout for better control
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(1, weight=1)  # Video frame expands in row 1
+
         # Buttons for simple clicks
         click_frame = tk.Frame(self)
-        click_frame.pack(pady=5)
+        click_frame.grid(row=0, column=0, sticky="ew", pady=5)
         tk.Button(click_frame, text="Simulate Click 1", command=lambda: self.controller.simulate_click("click1")).pack(side=tk.LEFT, padx=5)
         tk.Button(click_frame, text="Simulate Click 2", command=lambda: self.controller.simulate_click("click2")).pack(side=tk.LEFT, padx=5)
 
         # Frame for video with borders
         self.video_frame = tk.Frame(self, borderwidth=2, relief="ridge")
-        self.video_frame.pack(expand=True, fill=tk.BOTH, padx=10, pady=10)
+        self.video_frame.grid(row=1, column=0, sticky="nsew", padx=10, pady=10)
 
         # Label inside the video frame
         self.video_label = tk.Label(self.video_frame)
@@ -55,7 +59,7 @@ class AppView(tk.Tk):
 
         # Navigation buttons
         nav_frame = tk.Frame(self)
-        nav_frame.pack(pady=10)
+        nav_frame.grid(row=2, column=0, sticky="ew", pady=10)
         tk.Button(nav_frame, text="Start", command=lambda: self.controller.navigate("start")).grid(row=0, column=0, padx=5)
         tk.Button(nav_frame, text="-30 min", command=lambda: self.controller.navigate("backward")).grid(row=0, column=1, padx=5)
         tk.Button(nav_frame, text="+30 min", command=lambda: self.controller.navigate("forward")).grid(row=0, column=2, padx=5)
