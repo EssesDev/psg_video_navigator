@@ -9,6 +9,7 @@ A desktop application to navigate AVI/MP4 videos frame-by-frame and simulate mou
 - **Cross-Platform**: Runs natively on Windows, with easy extension to Ubuntu and macOS using PyInstaller for standalone executables.
 - **Open-Source**: Built with MIT/Apache-licensed libraries, ensuring no licensing issues for deployment.
 - **Menu Bar**: Includes File (Load Video, Exit), Settings (Configure Clicks), and Help (About) menus for improved usability.
+- **Responsive Video Display**: Video frames adapt to window size, displayed in a bordered frame, with a minimum window size of 400x300 pixels.
 
 ## Requirements
 - Python 3.10+ (tested on 3.11.7)
@@ -69,6 +70,7 @@ To create a standalone executable:
 ## Troubleshooting
 - Fixed an `AttributeError` in MVC initialization by passing the controller to the view at creation, ensuring robust dependency injection.
 - Resolved Tkinter/PyAutoGUI compatibility by using Python 3.11.7 with `python3-tk` on Ubuntu 22.04.
+- Fixed `AttributeError` in menu bar by using lambda for safe controller method access.
 
 ## Future Improvements
 - Save click configurations to a JSON file.
