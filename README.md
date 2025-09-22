@@ -52,14 +52,17 @@ A desktop application to navigate AVI/MP4 videos frame-by-frame and simulate mou
 To create a standalone executable:
 1. Run:
    ```bash
-   pyinstaller --onefile --windowed main.py
+   pyinstaller --onefile --windowed --name psg-video-navigator main.py
    ```
 2. Find the executable in the `dist/` folder.
 3. For Windows: Transfer and run the `.exe`. For Ubuntu/macOS: Rebuild on the target platform with PyInstaller.
 
 ## Project Structure
-- `main.py`: Core application (MVC pattern: Model for video/click logic, View for Tkinter UI, Controller for event handling).
-- Follows SOLID principles for maintainability and extensibility.
+- `main.py`: Entry point to initialize and run the application.
+- `models/`: Contains `VideoModel` (video handling) and `ClickConfig` (click coordinates).
+- `controllers/`: Contains `AppController` for coordinating models and view.
+- `views/`: Contains `AppView` for the Tkinter-based UI.
+- Follows MVC and SOLID principles for maintainability and extensibility.
 - Tests: All dependencies (`opencv-python`, `pillow`, `pyautogui`, `pyinstaller`) validated on Python 3.11.7.
 
 ## Troubleshooting
