@@ -1,6 +1,6 @@
 # PSG Video Navigator
 
-A simple desktop application to navigate video files (AVI/MP4) frame-by-frame and simulate mouse clicks at configurable screen coordinates. Built with Python, Tkinter, OpenCV, and PyAutoGUI, it is designed for cross-platform use (Windows, Ubuntu, macOS) with a focus on Polysomnography (PSG) video analysis or similar use cases.
+A desktop application to navigate AVI/MP4 videos frame-by-frame and simulate mouse clicks at configurable screen coordinates. Built with Python, Tkinter, OpenCV, and PyAutoGUI, it is designed for cross-platform use (Windows, Ubuntu, macOS) with a focus on Polysomnography (PSG) video analysis or similar use cases. This project showcases backend development skills, MVC, and SOLID principles for a maintainable codebase.
 
 ## Features
 - **Video Navigation**: Load AVI/MP4 videos and navigate statically (no playback) with buttons to jump forward/backward by 30 minutes, or to the start/end of the video.
@@ -10,9 +10,13 @@ A simple desktop application to navigate video files (AVI/MP4) frame-by-frame an
 - **Open-Source**: Built with MIT/Apache-licensed libraries, ensuring no licensing issues for deployment.
 
 ## Requirements
-- Python 3.10+ (tested on 3.12)
+- Python 3.10+ (tested on 3.11.7)
 - Libraries: `opencv-python`, `pillow`, `pyautogui`, `pyinstaller`
 - OS: Developed on Ubuntu 22.04.4 LTS; deployable on Windows, Ubuntu, macOS
+- System dependencies (Ubuntu):
+  ```bash
+  sudo apt install python3-tk libx11-dev libxi-dev libxtst-dev scrot
+  ```
 
 ## Installation
 1. Clone the repository:
@@ -56,6 +60,11 @@ To create a standalone executable:
 ## Project Structure
 - `main.py`: Core application (MVC pattern: Model for video/click logic, View for Tkinter UI, Controller for event handling).
 - Follows SOLID principles for maintainability and extensibility.
+- Tests: All dependencies (`opencv-python`, `pillow`, `pyautogui`, `pyinstaller`) validated on Python 3.11.7.
+
+## Troubleshooting
+- Fixed an `AttributeError` in MVC initialization by passing the controller to the view at creation, ensuring robust dependency injection.
+- Resolved Tkinter/PyAutoGUI compatibility by using Python 3.11.7 with `python3-tk` on Ubuntu 22.04.
 
 ## Future Improvements
 - Save click configurations to a JSON file.
@@ -66,4 +75,4 @@ To create a standalone executable:
 MIT License. All dependencies (Tkinter, OpenCV, PyAutoGUI, Pillow) are open-source with compatible licenses.
 
 ## Contributing
-Pull requests are welcome! For major changes, please open an issue first to discuss.
+This is a portfolio project with limited maintenance. Pull requests are welcome! For major changes, please open an issue first to discuss.
