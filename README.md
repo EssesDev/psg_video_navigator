@@ -3,14 +3,17 @@
 A desktop application to navigate AVI/MP4 videos frame-by-frame and simulate mouse clicks at configurable screen coordinates. Built with Python, Tkinter, OpenCV, and PyAutoGUI, it is designed for cross-platform use (Windows, Ubuntu, macOS) with a focus on Polysomnography (PSG) video analysis or similar use cases. This project showcases backend development skills, MVC, and SOLID principles for a maintainable codebase.
 
 ## Features
-- **Video Navigation**: Load AVI/MP4 videos and navigate statically (no playback) with buttons to jump forward/backward by 30 minutes, or to the start/end of the video.
-- **Mouse Click Simulation**: Trigger mouse clicks at user-defined (x, y) screen coordinates via buttons, with specific clicks tied to navigation actions. Clicks are performed without moving the cursor permanently.
+- **Video Navigation**: Load AVI/MP4 videos and navigate statically (no playback) with buttons to jump forward/backward by 30 seconds, or to the start/end of the video.
+- **Slice Navigation**: Display current slice number (30-second intervals) and jump to a specific slice via input.
+- **Mouse Click Simulation**: Trigger mouse clicks at user-defined (x, y) screen coordinates via buttons ("1", "2", "3", "R" for reset), with specific clicks tied to navigation actions. Clicks are performed without moving the cursor permanently.
 - **Configurable Clicks**: Set click coordinates by capturing a mouse click on the screen or manually entering (x, y) values through a Settings menu.
+- **Lock/Unlock**: Toggle lock state with a button to enable/disable interactions (extendable).
 - **Cross-Platform**: Runs natively on Windows, with easy extension to Ubuntu and macOS using PyInstaller for standalone executables.
 - **Open-Source**: Built with MIT/Apache-licensed libraries, ensuring no licensing issues for deployment.
 - **Menu Bar**: Includes File (Load Video, Exit), Settings (Configure Clicks), and Help (About) menus for improved usability.
 - **Responsive Video Display**: Video frames adapt to window size, displayed in a bordered frame, with a minimum window size of 400x300 pixels.
 - **Always On Top**: Application window remains in the foreground for user convenience.
+- **Version Display**: Shows version 1.0.0 in the bottom-right corner.
 
 ## Requirements
 - Python 3.10+ (tested on 3.11.7)
@@ -45,13 +48,16 @@ A desktop application to navigate AVI/MP4 videos frame-by-frame and simulate mou
 2. **Load a Video**: Use "File > Load Video" to select an AVI/MP4 file.
 3. **Configure Clicks**:
    - Go to "Settings > Configure Clicks" to open the configuration window.
-   - For each action (Click1, Click2, Forward, Backward, Start, End), either:
+   - For each action (Click1, Click2, Click3, Forward, Backward, Start, End), either:
      - Click "Capture", then click on the screen within 5 seconds to set the coordinates.
      - Enter (x, y) coordinates manually and click "Set".
 4. **Navigate and Click**:
-   - Use "Simulate Click 1/2" to trigger clicks at configured coordinates.
-   - Use navigation buttons ("Start", "-30 min", "+30 min", "End") to jump through the video and trigger associated clicks.
-5. The video frame updates statically in a bordered frame, and the window stays on top.
+   - Use buttons "1", "2", "3" to trigger clicks at configured coordinates.
+   - Use "R" to reset click positions to defaults.
+   - Use "Lock/Unlock" to toggle interaction state.
+   - Use navigation buttons ("Start", "-30s", "+30s", "End") to jump through the video and trigger associated clicks.
+   - Enter a slice number (30-second intervals) and click "Go" to jump to that slice.
+5. The video frame updates statically in a bordered frame, and the window stays on top. Version 1.0.0 is displayed in the bottom-right.
 
 **Note**: PyAutoGUI performs real mouse clicks on your screen. Ensure coordinates are safe to avoid unintended interactions.
 
@@ -81,11 +87,13 @@ To create a standalone executable:
 - Fixed `AttributeError` in menu bar by using lambda for safe controller method access.
 - Fixed navigation buttons disappearing after video load by switching to grid layout for better widget management.
 - Improved click simulation to avoid permanent cursor movement and simplified click configuration with screen capture.
+- Updated navigation to 30-second slices, added slice indicator and direct jump input.
+- Replaced simulate buttons with Lock/Unlock, 1, 2, 3, R for custom clicks and reset.
 
 ## Future Improvements
 - Save click configurations to a JSON file.
 - Add support for video playback (optional).
-- Add timestamp indicators for video navigation.
+- Enhance UI with resizable video display and timestamp indicators.
 
 ## License
 MIT License. All dependencies (Tkinter, OpenCV, PyAutoGUI, Pillow) are open-source with compatible licenses.
