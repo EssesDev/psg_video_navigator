@@ -5,13 +5,12 @@ A desktop application to navigate AVI/MP4 videos frame-by-frame and simulate mou
 ## Features
 - **Video Navigation**: Load AVI/MP4 videos and navigate statically (no playback) with buttons to jump forward/backward by 30 seconds, or to the start/end of the video.
 - **Slice Navigation**: Display current slice number (30-second intervals) and jump to a specific slice via input.
-- **Mouse Click Simulation**: Trigger mouse clicks at user-defined (x, y) screen coordinates via buttons ("1", "2", "3", "R" for reset), with specific clicks tied to navigation actions. Clicks are performed without moving the cursor permanently.
-- **Configurable Clicks**: Set click coordinates by capturing a mouse click on the screen or manually entering (x, y) values through a Settings menu.
-- **Lock/Unlock**: Toggle lock state with a button to enable/disable interactions (extendable).
+- **Mouse Click Simulation**: Trigger mouse clicks at user-defined (x, y) screen coordinates via buttons ("1", "2", "3", "REM" for sleep stages, "Lock/Unlock" for toggle), with specific clicks tied to navigation actions. Clicks are performed without moving the cursor permanently.
+- **Configurable Clicks**: Set click coordinates for all actions (including Lock/Unlock and REM) by capturing a mouse click on the screen or manually entering (x, y) values through a Settings menu. Reset all positions to defaults via a Reset button. Configurations are saved to a JSON file.
 - **Cross-Platform**: Runs natively on Windows, with easy extension to Ubuntu and macOS using PyInstaller for standalone executables.
 - **Open-Source**: Built with MIT/Apache-licensed libraries, ensuring no licensing issues for deployment.
 - **Menu Bar**: Includes File (Load Video, Exit), Settings (Configure Clicks), and Help (About) menus for improved usability.
-- **Responsive Video Display**: Video frames adapt to window size, displayed in a bordered frame, with a minimum window size of 400x300 pixels.
+- **Responsive Video Display**: Video frames adapt to window size, displayed in a bordered frame, with a minimum window size of 500x400 pixels.
 - **Always On Top**: Application window remains in the foreground for user convenience.
 - **Version Display**: Shows version 1.0.0 in the bottom-right corner.
 
@@ -87,8 +86,10 @@ To create a standalone executable:
 - Fixed `AttributeError` in menu bar by using lambda for safe controller method access.
 - Fixed navigation buttons disappearing after video load by switching to grid layout for better widget management.
 - Improved click simulation to avoid permanent cursor movement and simplified click configuration with screen capture.
-- Updated navigation to 30-second slices, added slice indicator and direct jump input.
+- Updated navigation to 30-second slices, added slice indicator and direct jump.
 - Replaced simulate buttons with Lock/Unlock, 1, 2, 3, R for custom clicks and reset.
+- Added configuration for Lock/Unlock and Reset buttons, improved click config labels to (x, y), and added Load Video button to top bar.
+- Updated R to REM for sleep stage, made Lock/Unlock a simple click, added Reset button to click config, and reordered Set before Capture.
 
 ## Future Improvements
 - Save click configurations to a JSON file.

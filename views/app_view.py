@@ -52,7 +52,7 @@ class AppView(tk.Tk):
         tk.Button(click_frame, text="1", command=lambda: self.controller.simulate_click("click1"), font=("Arial", 12)).pack(side=tk.LEFT, padx=5)
         tk.Button(click_frame, text="2", command=lambda: self.controller.simulate_click("click2"), font=("Arial", 12)).pack(side=tk.LEFT, padx=5)
         tk.Button(click_frame, text="3", command=lambda: self.controller.simulate_click("click3"), font=("Arial", 12)).pack(side=tk.LEFT, padx=5)
-        tk.Button(click_frame, text="REM", command=lambda: self.controller.simulate_click("rem"), font=("Arial", 12)).pack(side=tk.LEFT, padx=5)
+        tk.Button(click_frame, text="R", command=lambda: self.controller.simulate_click("rem"), font=("Arial", 12)).pack(side=tk.LEFT, padx=5)
         tk.Button(click_frame, text="Load Video", command=lambda: self.controller.load_video(), font=("Arial", 12)).pack(side=tk.RIGHT, padx=5)
 
         # Frame for video with borders
@@ -193,4 +193,3 @@ class AppView(tk.Tk):
         """Update the slice label with current slice number."""
         current_slice = self.controller.model_video.get_current_slice()
         self.slice_label.config(text=f"Slice: {current_slice}")
-        
