@@ -78,9 +78,9 @@ class AppController:
         if self.model_video.cap is None:
             return
         if action == "forward":
-            self.model_video.set_time(self.model_video.current_time + 1800)  # 30 min
+            self.model_video.set_time(self.model_video.current_time + 30)  # 30 seconds
         elif action == "backward":
-            self.model_video.set_time(self.model_video.current_time - 1800)
+            self.model_video.set_time(self.model_video.current_time - 30)
         elif action == "start":
             self.model_video.set_time(0)
         elif action == "end":
@@ -89,7 +89,21 @@ class AppController:
         self.simulate_click(action)
 
     def update_view(self) -> None:
-        """Update the view with the current video frame."""
+        """Update the view with the current video frame and slice info."""
         frame = self.model_video.get_frame()
         self.view.update_video_display(frame)
-        
+        self.view.update_slice_display()
+
+    def go_to_slice(self, slice_str: str) -> None:
+        """Navigate to a specific slice based on user input.
+
+        Args:
+            slice_str (str): Slice number as string from UI input.
+        """
+        try:
+            slice_num = int(slice_str)
+            self.model_video.set_slice(slice_num)
+            self.update_view()
+        except ValueError:
+            messagebox.showerror("Error", "Invalid slice number")
+            

@@ -6,6 +6,7 @@ video files (AVI/MP4) using OpenCV, following the Single Responsibility Principl
 
 import cv2
 import os
+import math
 
 
 class VideoModel:
@@ -16,6 +17,7 @@ class VideoModel:
         duration (float): Total duration of the video in seconds.
         current_time (float): Current position in the video in seconds.
         frame (numpy.ndarray): Current video frame as a numpy array (RGB).
+        slice_duration (float): Duration of each slice in seconds (default: 30).
     """
 
     def __init__(self):
@@ -24,6 +26,7 @@ class VideoModel:
         self.duration = 0
         self.current_time = 0
         self.frame = None
+        self.slice_duration = 30  # Duration of each slice in seconds
 
     def load_video(self, file_path: str) -> None:
         """Load a video file and initialize its properties.
@@ -71,4 +74,35 @@ class VideoModel:
             numpy.ndarray or None: Current frame in RGB format, or None if not available.
         """
         return self.frame
-    
+
+    def get_current_slice(self) -> int:
+        """Get the current slice number (1-based).
+
+        Returns:
+            int: Current slice number.
+        """
+        if self.duration == 0:
+            return 1
+        return math.floor(self.current_time / self.slice_duration) + 1
+
+    def get_total_slices(self) -> int:
+        """Get the total number of slices in the video.
+
+        Returns:
+            int: Total slices.
+        """
+        if self.duration == 0:
+            return 1
+        return math.ceil(self.duration / self.slice_duration)
+
+    def set_slice(self, slice_num: int) -> None:
+        """Set the video to the start of a specific slice.
+
+        Args:
+            slice_num (int): Slice number (1-based).
+        """
+        if self.cap is None:
+            return
+        time_sec = (slice_num - 1) * self.slice_duration
+        self.set_time(time_sec)
+        

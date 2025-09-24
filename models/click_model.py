@@ -14,14 +14,19 @@ class ClickConfig:
 
     def __init__(self):
         """Initialize ClickConfig with default click positions."""
+        self.reset_positions()
+
+    def reset_positions(self) -> None:
+        """Reset positions to default values."""
         # Default (x, y) coordinates for each action
         self.positions = {
             "click1": (100, 100),   # Simple click 1
             "click2": (200, 200),   # Simple click 2
-            "forward": (300, 300),  # Forward 30 minutes
-            "backward": (400, 400), # Backward 30 minutes
-            "start": (500, 500),    # Start of video
-            "end": (600, 600)       # End of video
+            "click3": (300, 300),   # Simple click 3
+            "forward": (400, 400),  # Forward 30 seconds
+            "backward": (500, 500), # Backward 30 seconds
+            "start": (600, 600),    # Start of video
+            "end": (700, 700)       # End of video
         }
 
     def set_position(self, key: str, x: int, y: int) -> None:
