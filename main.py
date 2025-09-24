@@ -28,6 +28,9 @@ def main():
     # Start the Tkinter event loop
     view.mainloop()
 
+    # Save click configurations on exit
+    click_model.save_positions()
+
 
 if __name__ == "__main__":
     main()

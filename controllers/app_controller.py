@@ -56,6 +56,11 @@ class AppController:
         self.model_click.set_position(key, x, y)
         messagebox.showinfo("Config", f"Position for {key} set to ({x}, {y})")
 
+    def reset_clicks(self) -> None:
+        """Reset click positions to defaults."""
+        self.model_click.reset_positions()
+        messagebox.showinfo("Reset", "Click positions reset to defaults")
+
     def load_video(self) -> None:
         """Open a file dialog to load a video and update the view.
 

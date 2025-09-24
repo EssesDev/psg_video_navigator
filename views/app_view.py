@@ -23,7 +23,6 @@ class AppView(tk.Tk):
         original_frame (PIL.Image): Original video frame for resizing.
         slice_label (tk.Label): Label for displaying current slice number.
         slice_entry (tk.Entry): Entry for entering slice number.
-        locked (bool): State for lock/unlock button.
     """
 
     def __init__(self, controller: any) -> None:
@@ -35,10 +34,9 @@ class AppView(tk.Tk):
         super().__init__()
         self.title("PSG Video Navigator")
         self.geometry("800x600")
-        self.minsize(400, 300)  # Set minimum window size
+        self.minsize(500, 400)  # Increased minimum window size
         self.controller = controller
         self.attributes('-topmost', True)  # Keep window always on top
-        self.locked = False  # Initial lock state
 
         # Create menu bar
         self.create_menu_bar()
@@ -50,12 +48,12 @@ class AppView(tk.Tk):
         # Buttons for custom clicks and lock
         click_frame = tk.Frame(self)
         click_frame.grid(row=0, column=0, sticky="ew", pady=5)
-        self.lock_button = tk.Button(click_frame, text="Unlock", command=self.toggle_lock)
-        self.lock_button.pack(side=tk.LEFT, padx=5)
-        tk.Button(click_frame, text="1", command=lambda: self.controller.simulate_click("click1")).pack(side=tk.LEFT, padx=5)
-        tk.Button(click_frame, text="2", command=lambda: self.controller.simulate_click("click2")).pack(side=tk.LEFT, padx=5)
-        tk.Button(click_frame, text="3", command=lambda: self.controller.simulate_click("click3")).pack(side=tk.LEFT, padx=5)
-        tk.Button(click_frame, text="R", command=self.reset_clicks).pack(side=tk.LEFT, padx=5)
+        tk.Button(click_frame, text="Lock/Unlock", command=lambda: self.controller.simulate_click("lock"), font=("Arial", 12)).pack(side=tk.LEFT, padx=5)
+        tk.Button(click_frame, text="1", command=lambda: self.controller.simulate_click("click1"), font=("Arial", 12)).pack(side=tk.LEFT, padx=5)
+        tk.Button(click_frame, text="2", command=lambda: self.controller.simulate_click("click2"), font=("Arial", 12)).pack(side=tk.LEFT, padx=5)
+        tk.Button(click_frame, text="3", command=lambda: self.controller.simulate_click("click3"), font=("Arial", 12)).pack(side=tk.LEFT, padx=5)
+        tk.Button(click_frame, text="REM", command=lambda: self.controller.simulate_click("rem"), font=("Arial", 12)).pack(side=tk.LEFT, padx=5)
+        tk.Button(click_frame, text="Load Video", command=lambda: self.controller.load_video(), font=("Arial", 12)).pack(side=tk.RIGHT, padx=5)
 
         # Frame for video with borders
         self.video_frame = tk.Frame(self, borderwidth=2, relief="ridge")
@@ -71,24 +69,24 @@ class AppView(tk.Tk):
         # Navigation buttons with slice indicator
         nav_frame = tk.Frame(self)
         nav_frame.grid(row=2, column=0, sticky="ew", pady=10)
-        tk.Button(nav_frame, text="Start", command=lambda: self.controller.navigate("start")).grid(row=0, column=0, padx=5)
-        tk.Button(nav_frame, text="-30s", command=lambda: self.controller.navigate("backward")).grid(row=0, column=1, padx=5)
+        tk.Button(nav_frame, text="Start", command=lambda: self.controller.navigate("start"), font=("Arial", 12)).grid(row=0, column=0, padx=5)
+        tk.Button(nav_frame, text="-30s", command=lambda: self.controller.navigate("backward"), font=("Arial", 12)).grid(row=0, column=1, padx=5)
 
         # Slice indicator frame
         slice_frame = tk.Frame(nav_frame)
         slice_frame.grid(row=0, column=2, padx=5)
-        self.slice_label = tk.Label(slice_frame, text="Slice: 1")
+        self.slice_label = tk.Label(slice_frame, text="Slice: 1", font=("Arial", 12))
         self.slice_label.pack(side=tk.LEFT)
-        self.slice_entry = tk.Entry(slice_frame, width=5)
+        self.slice_entry = tk.Entry(slice_frame, width=5, font=("Arial", 12))
         self.slice_entry.pack(side=tk.LEFT)
-        tk.Button(slice_frame, text="Go", command=lambda: self.controller.go_to_slice(self.slice_entry.get())).pack(side=tk.LEFT)
+        tk.Button(slice_frame, text="Go", command=lambda: self.controller.go_to_slice(self.slice_entry.get()), font=("Arial", 12)).pack(side=tk.LEFT)
 
-        tk.Button(nav_frame, text="+30s", command=lambda: self.controller.navigate("forward")).grid(row=0, column=3, padx=5)
-        tk.Button(nav_frame, text="End", command=lambda: self.controller.navigate("end")).grid(row=0, column=4, padx=5)
+        tk.Button(nav_frame, text="+30s", command=lambda: self.controller.navigate("forward"), font=("Arial", 12)).grid(row=0, column=3, padx=5)
+        tk.Button(nav_frame, text="End", command=lambda: self.controller.navigate("end"), font=("Arial", 12)).grid(row=0, column=4, padx=5)
 
         # Version label
-        version_label = tk.Label(self, text="Version 1.0.0")
-        version_label.place(relx=1.0, rely=1.0, anchor="se", x=-10, y=-10)
+        version_label = tk.Label(self, text="Version 1.0.0", font=("Arial", 10))
+        version_label.grid(row=3, column=0, sticky="se", padx=10, pady=10)
 
         # Initialize original frame as None
         self.original_frame = None
@@ -101,7 +99,6 @@ class AppView(tk.Tk):
         # File menu
         file_menu = tk.Menu(menu_bar, tearoff=0)
         menu_bar.add_cascade(label="File", menu=file_menu)
-        # Use lambda to safely access controller method
         file_menu.add_command(label="Load Video", command=lambda: self.controller.load_video())
         file_menu.add_separator()
         file_menu.add_command(label="Exit", command=self.quit)
@@ -120,22 +117,25 @@ class AppView(tk.Tk):
         """Open a new window to configure click coordinates."""
         config_window = tk.Toplevel(self)
         config_window.title("Configure Click Positions")
-        config_window.geometry("400x400")
+        config_window.geometry("400x500")
         config_window.attributes('-topmost', True)  # Keep config window on top
 
         # Create input fields and capture buttons for click coordinates
-        labels = ["Click1", "Click2", "Click3", "Forward", "Backward", "Start", "End"]
-        keys = ["click1", "click2", "click3", "forward", "backward", "start", "end"]
+        labels = ["Lock/Unlock", "1", "2", "3", "REM", "Forward", "Backward", "Start", "End"]
+        keys = ["lock", "click1", "click2", "click3", "rem", "forward", "backward", "start", "end"]
         self.entries = {}
         for i, (label, key) in enumerate(zip(labels, keys)):
-            tk.Label(config_window, text=f"{label} x,y:").grid(row=i, column=0, padx=5, pady=5)
+            tk.Label(config_window, text=f"{label} (x, y):").grid(row=i, column=0, padx=5, pady=5)
             x_entry = tk.Entry(config_window, width=5)
             y_entry = tk.Entry(config_window, width=5)
             x_entry.grid(row=i, column=1, padx=5)
             y_entry.grid(row=i, column=2, padx=5)
-            tk.Button(config_window, text="Capture", command=lambda k=key, xe=x_entry, ye=y_entry: self.capture_position(k, xe, ye)).grid(row=i, column=3, padx=5)
-            tk.Button(config_window, text="Set", command=lambda k=key, xe=x_entry, ye=y_entry: self.set_position_from_entry(k, xe.get(), ye.get())).grid(row=i, column=4, padx=5)
+            tk.Button(config_window, text="Set", command=lambda k=key, xe=x_entry, ye=y_entry: self.set_position_from_entry(k, xe.get(), ye.get())).grid(row=i, column=3, padx=5)
+            tk.Button(config_window, text="Capture", command=lambda k=key, xe=x_entry, ye=y_entry: self.capture_position(k, xe, ye)).grid(row=i, column=4, padx=5)
             self.entries[key] = (x_entry, y_entry)
+
+        # Reset button
+        tk.Button(config_window, text="Reset", command=self.controller.reset_clicks, font=("Arial", 12)).grid(row=len(labels), column=0, columnspan=5, pady=10)
 
     def capture_position(self, key: str, x_entry: tk.Entry, y_entry: tk.Entry) -> None:
         """Capture mouse click position after a short delay and set it for the action."""
@@ -155,18 +155,6 @@ class AppView(tk.Tk):
             self.controller.set_click_position(key, x, y)
         except ValueError:
             messagebox.showerror("Error", "Invalid x,y values")
-
-    def toggle_lock(self) -> None:
-        """Toggle the lock state and update button text."""
-        self.locked = not self.locked
-        self.lock_button.config(text="Lock" if self.locked else "Unlock")
-        # Optionally disable/enable other buttons if locked
-        # For now, just toggle state; extend as needed
-
-    def reset_clicks(self) -> None:
-        """Reset click positions to defaults."""
-        self.controller.model_click.reset_positions()
-        messagebox.showinfo("Reset", "Click positions reset to defaults")
 
     def show_about(self) -> None:
         """Display an About dialog with application information."""

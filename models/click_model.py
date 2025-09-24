@@ -4,30 +4,39 @@ This module contains the ClickConfig class, responsible for storing and updating
 click positions, following the Single Responsibility Principle.
 """
 
+import json
+import os
+
 
 class ClickConfig:
     """Manages mouse click coordinates for various actions.
 
     Attributes:
         positions (dict): Dictionary mapping action keys to (x, y) coordinates.
+        config_file (str): Path to the JSON configuration file.
     """
 
-    def __init__(self):
-        """Initialize ClickConfig with default click positions."""
+    def __init__(self, config_file: str = "click_config.json"):
+        """Initialize ClickConfig with default or loaded click positions."""
+        self.config_file = config_file
         self.reset_positions()
+        self.load_positions()  # Load from file if exists
 
     def reset_positions(self) -> None:
         """Reset positions to default values."""
         # Default (x, y) coordinates for each action
         self.positions = {
-            "click1": (100, 100),   # Simple click 1
-            "click2": (200, 200),   # Simple click 2
-            "click3": (300, 300),   # Simple click 3
-            "forward": (400, 400),  # Forward 30 seconds
-            "backward": (500, 500), # Backward 30 seconds
-            "start": (600, 600),    # Start of video
-            "end": (700, 700)       # End of video
+            "click1": (100, 100),   # Button 1
+            "click2": (200, 200),   # Button 2
+            "click3": (300, 300),   # Button 3
+            "rem": (400, 400),      # REM button
+            "forward": (500, 500),  # +30s
+            "backward": (600, 600), # -30s
+            "start": (700, 700),    # Start
+            "end": (800, 800),      # End
+            "lock": (900, 900)      # Lock/Unlock button
         }
+        self.save_positions()  # Save defaults to file
 
     def set_position(self, key: str, x: int, y: int) -> None:
         """Set the (x, y) coordinates for a specific action.
@@ -38,6 +47,7 @@ class ClickConfig:
             y (int): Y-coordinate for the click.
         """
         self.positions[key] = (x, y)
+        self.save_positions()  # Save after setting position
 
     def get_position(self, key: str) -> tuple:
         """Get the (x, y) coordinates for a specific action.
@@ -49,4 +59,22 @@ class ClickConfig:
             tuple: (x, y) coordinates, defaults to (0, 0) if key is invalid.
         """
         return self.positions.get(key, (0, 0))
-    
+
+    def load_positions(self) -> None:
+        """Load click positions from a JSON file if it exists."""
+        if os.path.exists(self.config_file):
+            try:
+                with open(self.config_file, "r") as f:
+                    loaded_positions = json.load(f)
+                self.positions.update(loaded_positions)
+            except Exception as e:
+                print(f"Error loading config: {e}")
+
+    def save_positions(self) -> None:
+        """Save click positions to a JSON file."""
+        try:
+            with open(self.config_file, "w") as f:
+                json.dump(self.positions, f, indent=4)
+        except Exception as e:
+            print(f"Error saving config: {e}")
+            
