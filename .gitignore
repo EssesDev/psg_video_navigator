@@ -50,3 +50,4 @@ tmp/
 # Autres
 afficher_structure.py
 TRASH/
+click_config.json

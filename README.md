@@ -21,3 +21,11 @@ A desktop application to navigate AVI/MP4 videos frame-by-frame and simulate mou
 - System dependencies (Ubuntu):
   ```bash
   sudo apt install python3-tk libx11-dev libxi-dev libxtst-dev scrot
+
+## Testing
+- Comprehensive unit tests for `video_model.py`, `click_model.py`, `app_controller.py`, and `app_view.py` using `pytest`.
+- Tests cover video loading, navigation, click configuration, and UI initialization.
+- Run tests with: `pytest tests/ -v`
+
+## Troubleshooting
+- Fixed issue where click positions were reset on application restart by adjusting ClickConfig initialization to prioritize loading saved positions.

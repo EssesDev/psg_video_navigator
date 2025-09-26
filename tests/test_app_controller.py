@@ -19,23 +19,23 @@ def controller(tmp_path):
 @patch("pyautogui.click")
 def test_simulate_click_with_advance(mock_click, mock_move_to, mock_position, controller):
     """Test simulating a click with 30s advance for click1, click2, click3, rem."""
-    controller.model_click.get_position.return_value = (500, 600)
-    mock_position.return_value = (100, 100)
-    controller.model_video.cap = Mock()  # Simulate loaded video
-    controller.model_video.current_time = 10.0
-    controller.model_video.set_time = Mock()
-    controller.update_view = Mock()
-    for key in ["click1", "click2", "click3", "rem"]:
-        controller.simulate_click(key)
-        mock_move_to.assert_any_call(500, 600, duration=0)
-        mock_click.assert_called()
-        mock_move_to.assert_any_call(100, 100, duration=0)
-        controller.model_video.set_time.assert_called_with(40.0)
-        controller.update_view.assert_called()
-        mock_click.reset_mock()
-        mock_move_to.reset_mock()
-        controller.model_video.set_time.reset_mock()
-        controller.update_view.reset_mock()
+    with patch.object(controller.model_click, "get_position", return_value=(500, 600)):
+        mock_position.return_value = (100, 100)
+        controller.model_video.cap = Mock()  # Simulate loaded video
+        controller.model_video.current_time = 10.0
+        controller.model_video.set_time = Mock()
+        controller.update_view = Mock()
+        for key in ["click1", "click2", "click3", "rem"]:
+            controller.simulate_click(key)
+            mock_move_to.assert_any_call(500, 600, duration=0)
+            mock_click.assert_called()
+            mock_move_to.assert_any_call(100, 100, duration=0)
+            controller.model_video.set_time.assert_called_with(40.0)
+            controller.update_view.assert_called()
+            mock_click.reset_mock()
+            mock_move_to.reset_mock()
+            controller.model_video.set_time.reset_mock()
+            controller.update_view.reset_mock()
 
 
 @patch("pyautogui.position")
@@ -43,20 +43,20 @@ def test_simulate_click_with_advance(mock_click, mock_move_to, mock_position, co
 @patch("pyautogui.click")
 def test_simulate_click_no_advance(mock_click, mock_move_to, mock_position, controller):
     """Test simulating a click without advance for other actions."""
-    controller.model_click.get_position.return_value = (500, 600)
-    mock_position.return_value = (100, 100)
-    controller.model_video.cap = Mock()  # Simulate loaded video
-    controller.model_video.set_time = Mock()
-    controller.update_view = Mock()
-    for key in ["lock", "forward", "backward", "start", "end"]:
-        controller.simulate_click(key)
-        mock_move_to.assert_any_call(500, 600, duration=0)
-        mock_click.assert_called()
-        mock_move_to.assert_any_call(100, 100, duration=0)
-        controller.model_video.set_time.assert_not_called()
-        controller.update_view.assert_not_called()
-        mock_click.reset_mock()
-        mock_move_to.reset_mock()
+    with patch.object(controller.model_click, "get_position", return_value=(500, 600)):
+        mock_position.return_value = (100, 100)
+        controller.model_video.cap = Mock()  # Simulate loaded video
+        controller.model_video.set_time = Mock()
+        controller.update_view = Mock()
+        for key in ["lock", "forward", "backward", "start", "end"]:
+            controller.simulate_click(key)
+            mock_move_to.assert_any_call(500, 600, duration=0)
+            mock_click.assert_called()
+            mock_move_to.assert_any_call(100, 100, duration=0)
+            controller.model_video.set_time.assert_not_called()
+            controller.update_view.assert_not_called()
+            mock_click.reset_mock()
+            mock_move_to.reset_mock()
 
 
 @patch("tkinter.filedialog.askopenfilename")

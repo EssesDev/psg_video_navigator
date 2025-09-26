@@ -19,8 +19,8 @@ class ClickConfig:
     def __init__(self, config_file: str = "click_config.json"):
         """Initialize ClickConfig with default or loaded click positions."""
         self.config_file = config_file
-        self.reset_positions()
-        self.load_positions()  # Load from file if exists
+        self.positions = {}  # Initialize empty
+        self.load_positions()  # Load from file or set defaults if file doesn't exist
 
     def reset_positions(self) -> None:
         """Reset positions to default values."""
@@ -61,7 +61,7 @@ class ClickConfig:
         return self.positions.get(key, (0, 0))
 
     def load_positions(self) -> None:
-        """Load click positions from a JSON file if it exists."""
+        """Load click positions from a JSON file if it exists, otherwise set defaults."""
         if os.path.exists(self.config_file):
             try:
                 with open(self.config_file, "r") as f:
@@ -70,6 +70,9 @@ class ClickConfig:
                 self.positions.update({k: tuple(v) for k, v in loaded_positions.items()})
             except Exception as e:
                 print(f"Error loading config: {e}")
+                self.reset_positions()  # Fallback to defaults if loading fails
+        else:
+            self.reset_positions()  # Set defaults if file doesn't exist
 
     def save_positions(self) -> None:
         """Save click positions to a JSON file."""
