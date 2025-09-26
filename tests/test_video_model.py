@@ -16,7 +16,7 @@ def test_load_video_success(mock_capture, video_model):
     """Test successful video loading."""
     mock_cap = Mock()
     mock_cap.isOpened.return_value = True
-    mock_cap.get.side_effect = [100, 25]  # 100 frames, 25 FPS
+    mock_cap.get.side_effect = [25.0, 100]  # FPS, frame_count
     mock_capture.return_value = mock_cap
     video_model.load_video("test.mp4")
     assert video_model.cap == mock_cap
@@ -48,7 +48,7 @@ def test_set_time_valid(mock_capture, video_model):
     """Test setting valid time within video duration."""
     mock_cap = Mock()
     mock_cap.isOpened.return_value = True
-    mock_cap.get.side_effect = [100, 25]  # 100 frames, 25 FPS
+    mock_cap.get.return_value = 25.0  # FPS
     mock_cap.read.return_value = (True, np.zeros((480, 640, 3), dtype=np.uint8))
     video_model.cap = mock_cap
     video_model.duration = 4.0
@@ -62,7 +62,7 @@ def test_set_time_clamp(mock_capture, video_model):
     """Test time clamping to 0 or duration."""
     mock_cap = Mock()
     mock_cap.isOpened.return_value = True
-    mock_cap.get.side_effect = [100, 25]  # 100 frames, 25 FPS
+    mock_cap.get.return_value = 25.0  # FPS
     mock_cap.read.return_value = (True, np.zeros((480, 640, 3), dtype=np.uint8))
     video_model.cap = mock_cap
     video_model.duration = 4.0
@@ -92,10 +92,11 @@ def test_set_slice(mock_capture, video_model):
     """Test setting video to a specific slice."""
     mock_cap = Mock()
     mock_cap.isOpened.return_value = True
-    mock_cap.get.side_effect = [100, 25]  # 100 frames, 25 FPS
+    mock_cap.get.return_value = 25.0  # FPS
     mock_cap.read.return_value = (True, np.zeros((480, 640, 3), dtype=np.uint8))
     video_model.cap = mock_cap
     video_model.duration = 4.0
     video_model.slice_duration = 1.0
     video_model.set_slice(2)
     assert video_model.current_time == 1.0  # (2-1) * 1.0
+    

@@ -53,7 +53,7 @@ class VideoModel:
         Args:
             time (float): Desired time in seconds.
         """
-        if self.cap is None:
+        if self.cap is None or not self.cap.isOpened():
             return
         # Clamp time between 0 and duration
         time = max(0.0, min(time, self.duration))

@@ -66,7 +66,8 @@ class ClickConfig:
             try:
                 with open(self.config_file, "r") as f:
                     loaded_positions = json.load(f)
-                self.positions.update(loaded_positions)
+                # Convert lists to tuples for consistency
+                self.positions.update({k: tuple(v) for k, v in loaded_positions.items()})
             except Exception as e:
                 print(f"Error loading config: {e}")
 
