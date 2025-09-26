@@ -139,7 +139,7 @@ class AppView(tk.Tk):
 
     def capture_position(self, key: str, x_entry: tk.Entry, y_entry: tk.Entry) -> None:
         """Capture mouse click position after a short delay and set it for the action."""
-        messagebox.showinfo("Capture Position", "Click on the screen where you want the click to occur. You have 5 seconds.")
+        messagebox.showinfo("Capture Position", "Move cursor on the screen where you want the click to occur. You have 5 seconds.")
         time.sleep(5)  # Wait for user to click
         x, y = pyautogui.position()
         x_entry.delete(0, tk.END)

@@ -34,6 +34,8 @@ class AppController:
     def simulate_click(self, key: str) -> None:
         """Simulate a mouse click at the configured coordinates for an action without moving the cursor permanently.
 
+        For click1, click2, click3, and rem, also advance the video by 30 seconds.
+
         Args:
             key (str): Action identifier (e.g., 'click1', 'forward').
         """
@@ -44,6 +46,10 @@ class AppController:
         pyautogui.moveTo(x, y, duration=0)
         pyautogui.click()
         pyautogui.moveTo(current_x, current_y, duration=0)
+        # Advance video by 30 seconds for click1, click2, click3, and rem
+        if key in ["click1", "click2", "click3", "rem"] and self.model_video.cap is not None:
+            self.model_video.set_time(self.model_video.current_time + 30)
+            self.update_view()
 
     def set_click_position(self, key: str, x: int, y: int) -> None:
         """Set the (x, y) coordinates for a specific action and show confirmation.
@@ -89,7 +95,9 @@ class AppController:
         elif action == "start":
             self.model_video.set_time(0)
         elif action == "end":
-            self.model_video.set_time(self.model_video.duration)
+            # Move to the start of the last slice
+            last_slice = self.model_video.get_total_slices()
+            self.model_video.set_slice(last_slice)
         self.update_view()
         self.simulate_click(action)
 
@@ -111,4 +119,3 @@ class AppController:
             self.update_view()
         except ValueError:
             messagebox.showerror("Error", "Invalid slice number")
-            

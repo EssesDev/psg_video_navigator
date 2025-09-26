@@ -77,4 +77,3 @@ class ClickConfig:
                 json.dump(self.positions, f, indent=4)
         except Exception as e:
             print(f"Error saving config: {e}")
-            
